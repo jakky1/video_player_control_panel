@@ -1,9 +1,9 @@
 name: video_player_control_panel
 description: A control panel laid on top of VideoPlayer. User can do play / pause / seekTo / set volume on it. Support closed captions / subtitle. Support fullscreen.
-version: 1.0.0
 homepage: https://github.com/jakky1/video_player_control_panel
 repository: https://github.com/jakky1/video_player_control_panel
 issue_tracker: https://github.com/jakky1/video_player_control_panel/issues
+version: 1.0.1
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
@@ -39,7 +39,7 @@ flutter:
   # This is required for using `dart:ffi`.
   # All these are used by the tooling to maintain consistency when
   # adding or updating assets for this project.
-  #plugin:
+  plugin:
     platforms:
       android:
         package: jakky1.dev.video_player_control_panel
