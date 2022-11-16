@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "jakky1.dev" "\0"
             VALUE "FileDescription", "video_player_control_panel_example" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "video_player_control_panel_example" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2022 jakky1.dev. All rights reserved." "\0"
             VALUE "OriginalFilename", "video_player_control_panel_example.exe" "\0"
             VALUE "ProductName", "video_player_control_panel_example" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

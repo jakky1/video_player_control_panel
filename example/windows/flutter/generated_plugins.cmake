@@ -3,8 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  fullscreen_window
-  video_player_win
+  video_player_control_panel
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

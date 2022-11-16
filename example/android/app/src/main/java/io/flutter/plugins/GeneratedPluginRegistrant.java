@@ -16,9 +16,9 @@ public final class GeneratedPluginRegistrant {
   private static final String TAG = "GeneratedPluginRegistrant";
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
     try {
-      flutterEngine.getPlugins().add(new io.flutter.plugins.videoplayer.VideoPlayerPlugin());
+      flutterEngine.getPlugins().add(new jakky1.dev.video_player_control_panel.VideoPlayerControlPanelPlugin());
     } catch(Exception e) {
-      Log.e(TAG, "Error registering plugin video_player_android, io.flutter.plugins.videoplayer.VideoPlayerPlugin", e);
+      Log.e(TAG, "Error registering plugin video_player_control_panel, jakky1.dev.video_player_control_panel.VideoPlayerControlPanelPlugin", e);
     }
   }
 }
