@@ -25,10 +25,7 @@ dependencies:
     # The example app is bundled with the plugin so we use a path dependency on
     # the parent directory to use the current plugin's version.
     
-    #path: ../
-    git:
-      url: https://github.com/jakky1/video_player_control_panel.git
-      ref: master    
+    path: ../
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
