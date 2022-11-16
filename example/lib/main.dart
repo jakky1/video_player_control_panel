@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -52,6 +53,11 @@ class _MyAppState extends State<MyApp> {
     controller.initialize().then((value) {
       if (!kIsWeb) controller.play(); // NOTE: web not allowed auto play without user interaction
       setState(() {});
+      if (!controller.value.isInitialized) {
+        log("controller.initialize() failed");
+      }
+    }).catchError((e) {
+      log("controller.initialize() error occurs: $e");
     });
   }
 

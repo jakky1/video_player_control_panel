@@ -61,11 +61,32 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
   final currentCaption = ValueNotifier<String>("");
   
   bool isMouseMode = false;
-  bool isFullScreen = false;
   final mouseVisibility = ValueNotifier<bool>(true);
   
   bool isDraggingVolumeBar = false;
   bool isMouseInVolumeBar = false;
+
+  double lastVideoAspectRatio = 1;
+  bool? isHorizontalInFullScreen; // null: not fullscreen, true: fullscreen(horizontal), false: fullscreen(vertical)
+
+  void onAspectRatioChanged() {
+    if (widget._isFullscreen && !isDesktop) {
+      // if in fullscreen mode, auto force set orientation for android / iOS
+      if (lastVideoAspectRatio > 1 && isHorizontalInFullScreen != true) {
+        isHorizontalInFullScreen = true;
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);        
+      } else if (lastVideoAspectRatio < 1 && isHorizontalInFullScreen != false) {
+        isHorizontalInFullScreen = false;
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);      
+      }
+    }
+  }
 
   void onPlayerValueChanged() { 
     final playerValue = widget.controller.value;
@@ -78,6 +99,11 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
     hasClosedCaptionFile.value = widget.controller.closedCaptionFile != null;
     currentCaption.value = playerValue.caption.text;
+
+    if (lastVideoAspectRatio != playerValue.aspectRatio) {
+      lastVideoAspectRatio = playerValue.aspectRatio;
+      onAspectRatioChanged();
+    }
   }
 
   double volumeBeforeMute = 1.0;
@@ -97,7 +123,15 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
           return Material(child: JkVideoControlPanel._fullscreen(widget.controller, key: widget.key, showClosedCaptions: showClosedCaptions, showVolumeButton: widget.showVolumeButton));
         },
         ),
-      );
+      ).then((value) {
+        // when exit fullscreen, unlock screen orientation settings
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);        
+      });
     } else {
       Navigator.of(context).pop();
     }
