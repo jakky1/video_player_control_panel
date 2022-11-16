@@ -1,0 +1,48 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+.packages
+build/
+example/android/app/src/debug/AndroidManifest.xml
+example/android/.gradle/file-system.probe
+example/android/.gradle/7.4/gc.properties
+example/android/.gradle/7.4/checksums/checksums.lock
+example/android/.gradle/7.4/checksums/md5-checksums.bin
+example/android/.gradle/7.4/checksums/sha1-checksums.bin
+example/android/.gradle/7.4/dependencies-accessors/dependencies-accessors.lock
+example/android/.gradle/7.4/dependencies-accessors/gc.properties
+example/android/.gradle/7.4/executionHistory/executionHistory.bin
+example/android/.gradle/7.4/executionHistory/executionHistory.lock
+example/android/.gradle/7.4/fileChanges/last-build.bin
+example/android/.gradle/7.4/fileHashes/fileHashes.bin
+example/android/.gradle/7.4/fileHashes/fileHashes.lock
+example/android/.gradle/7.4/fileHashes/resourceHashesCache.bin
+example/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+example/android/.gradle/buildOutputCleanup/cache.properties
+example/android/.gradle/buildOutputCleanup/outputFiles.bin
+example/android/.gradle/vcs-1/gc.properties
