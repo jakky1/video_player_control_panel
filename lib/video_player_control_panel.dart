@@ -524,10 +524,22 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       }
     );    
 
+    Widget videoWidget = VideoPlayer(widget.controller);
+    if (!kIsWeb && Platform.isAndroid) {
+      // package [video_player_android] provide a widget that not follow the video's aspectRatio
+      // so we wrap it by AspectRatio here.
+      videoWidget = Center(
+        child: AspectRatio(
+          aspectRatio: widget.controller.value.aspectRatio,
+          child: videoWidget,
+        ),
+      );
+    }
+
     Widget allWidgets = Stack(
       children: [
         Container(color: Colors.black), // video_player open file need time, so put a black bg here
-        VideoPlayer(widget.controller),
+        videoWidget,
         closedCaptionWidget,
         bufferingWidget,
         panelWidget,
