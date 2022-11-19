@@ -18,6 +18,7 @@ Playback in Android / iOS / Web is supported by flutter official package [video_
 ## Supported Formats in Windows (Important !)
 
 For Windows, please refer to [video_player_win][2]. (Important)
+
 For Android / iOS / Web, please refer to [video_player][1].
 
 ## Quick Start
