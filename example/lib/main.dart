@@ -29,6 +29,12 @@ String generateCaptionFileContent() {
   return sb.toString();
 }
 
+final g_playlist = [
+  //"E:/test_youtube.mp4",
+  "https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4",    
+  "https://freetestdata.com/wp-content/uploads/2022/02/Free_Test_Data_10MB_MOV.mov",
+];
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -38,48 +44,86 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  late VideoPlayerController controller;
+  VideoPlayerController? controller;
+  int nowPlayIndex = 0;
 
-  @override
-  void initState() {   
-    super.initState();
-   
-    //controller = VideoPlayerController.file(File("E:\\test_youtube.mp4"));
-    controller = VideoPlayerController.network("https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4");
+  void playPrevVideo() {
+    if (nowPlayIndex <= 0) return;
+    playVideo(--nowPlayIndex);
+  }
+
+  void playNextVideo() {
+    if (nowPlayIndex >= g_playlist.length - 1) return;
+    playVideo(++nowPlayIndex);
+  }
+
+  void playVideo(int index) {
+    controller?.dispose();
+    
+    var path = g_playlist[index];
+    controller = VideoPlayerController.network(path);
 
     var captionFile = Future.value(SubRipCaptionFile(generateCaptionFileContent()));
-    controller.setClosedCaptionFile(captionFile);
+    controller!.setClosedCaptionFile(captionFile);
 
-    controller.initialize().then((value) {
-      if (!kIsWeb) controller.play(); // NOTE: web not allowed auto play without user interaction
-      setState(() {});
-      if (!controller.value.isInitialized) {
+    setState(() {});
+    controller!.initialize().then((value) {
+      if (!controller!.value.isInitialized) {
         log("controller.initialize() failed");
+        return;
       }
+
+      controller!.play(); // NOTE: web not allowed auto play without user interaction
     }).catchError((e) {
       log("controller.initialize() error occurs: $e");
     });
   }
 
   @override
+  void initState() {   
+    super.initState();  
+    playVideo(0);
+  }
+
+  @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    controller?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget player = JkVideoControlPanel(controller!, 
+      showClosedCaptionButton: true, 
+      showFullscreenButton: true,
+      showVolumeButton: true,
+      onPrevClicked: (nowPlayIndex <= 0) ? null :  () {
+        playPrevVideo();
+      },
+      onNextClicked: (nowPlayIndex >= g_playlist.length - 1) ? null : () {
+        playNextVideo();
+      },
+      onPlayEnded: () {
+        playNextVideo();
+      },
+    );
+
+    Widget player2 = JkVideoPlaylistPlayer(
+      playlist: g_playlist,
+      isLooping: true,
+      autoplay: true,
+    );
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Example app'),
         ),
         
-        body: JkVideoControlPanel(controller, 
-          showClosedCaptionButton: true, 
-          showFullscreenButton: true,
-          showVolumeButton: true
-        ),
+        body: Row(children: [
+          Expanded(child: player),
+          //Expanded(child: player2),  // unmark this line to show 2 videos
+        ]),
       ),
     );
   }

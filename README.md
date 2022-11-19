@@ -87,7 +87,22 @@ Widget build(BuildContext context) {
   return JkVideoControlPanel(controller, 
     showClosedCaptionButton: true, 
     showFullscreenButton: true,
-    showVolumeButton: true
+    showVolumeButton: true,
+	
+	// onPrevClicked: optional. If provided, a [previous] button will shown
+    onPrevClicked: (nowPlayIndex <= 0) ? null : () { 
+      playPrevVideo();
+    },
+
+	// onNextClicked: optional. If provided, a [next] button will shown
+    onNextClicked: (nowPlayIndex >= g_playlist.length - 1) ? null : () {
+      playNextVideo();
+    },
+	
+	// onPlayEnded: optional, called when the current media is play to end.
+    onPlayEnded: () {
+      playNextVideo();
+    },
   );
 }
 ```
@@ -124,7 +139,27 @@ controller.removeListener(onPlaybackEvent); // remember to removeListener()
 controller.dispose();
 ```
 
-### Example
+## Play a playlist in a simple way
+No need to use controller !
+```
+final m_playlist = [
+  "https://www.test.com/test1.mp4",
+  "https://www.test.com/test2.mp4",
+  "E:/test_youtube.mp4",
+];
+
+@override
+Widget build(BuildContext context) {
+  return JkVideoPlaylistPlayer(
+    playlist: m_playlist,
+    isLooping: true,
+    autoplay: true,
+  );
+}
+```
+
+
+## Example
 
 ```
 import 'dart:io';
