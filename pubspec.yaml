@@ -5,6 +5,12 @@ repository: https://github.com/jakky1/video_player_control_panel
 issue_tracker: https://github.com/jakky1/video_player_control_panel/issues
 version: 1.0.4
 
+platforms:
+  windows:
+  android:
+  ios:
+  web:
+
 environment:
   sdk: '>=2.18.4 <3.0.0'
   flutter: ">=2.5.0"
@@ -41,18 +47,7 @@ flutter:
   # This is required for using `dart:ffi`.
   # All these are used by the tooling to maintain consistency when
   # adding or updating assets for this project.
-  plugin:
-    platforms:
-      android:
-        package: jakky1.dev.video_player_control_panel
-        pluginClass: VideoPlayerControlPanelPlugin
-      ios:
-        pluginClass: VideoPlayerControlPanelPlugin
-      windows:
-        pluginClass: VideoPlayerControlPanelPluginCApi
-      web:
-        pluginClass: VideoPlayerControlPanelWeb
-        fileName: video_player_control_panel_web.dart
+  #plugin:
         
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
