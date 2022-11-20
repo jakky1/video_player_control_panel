@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Add controller.dispose() in state.dispose() for JkVideoPlaylistPlayer
+
 ## 1.0.3
 
 * Add prev / next buttons let user switch medias.

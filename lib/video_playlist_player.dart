@@ -81,6 +81,12 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    controller?.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return JkVideoControlPanel(
       controller!, 
