@@ -1,6 +1,6 @@
 # video_player_control_panel
 
-![pub version][visits-count-image] 
+![pub version][visits-count-image]
 
 [visits-count-image]: https://img.shields.io/badge/dynamic/json?label=Visits%20Count&query=value&url=https://api.countapi.xyz/hit/jakky1_video_player_control_panel/visits
 
@@ -36,7 +36,7 @@ Or
 
 ```yaml
 dependencies:
-  video_player_win:
+  video_player_control_panel:
     git:
       url: https://github.com/jakky1/video_player_control_panel.git
       ref: master
@@ -85,13 +85,13 @@ controller.setClosedCaptionFile( Future.value(file) );
 If the file is a video, build a display widget to show video frames with a control panel:
 ```
 Widget build(BuildContext context) {
-  return JkVideoControlPanel(controller, 
-    showClosedCaptionButton: true, 
+  return JkVideoControlPanel(controller,
+    showClosedCaptionButton: true,
     showFullscreenButton: true,
     showVolumeButton: true,
-	
+
 	// onPrevClicked: optional. If provided, a [previous] button will shown
-    onPrevClicked: (nowPlayIndex <= 0) ? null : () { 
+    onPrevClicked: (nowPlayIndex <= 0) ? null : () {
       playPrevVideo();
     },
 
@@ -99,7 +99,7 @@ Widget build(BuildContext context) {
     onNextClicked: (nowPlayIndex >= g_playlist.length - 1) ? null : () {
       playNextVideo();
     },
-	
+
 	// onPlayEnded: optional, called when the current media is play to end.
     onPlayEnded: () {
       playNextVideo();
@@ -174,7 +174,7 @@ import 'package:sprintf/sprintf.dart';
 
 
 void main() {
-  if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith(); 
+  if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
   runApp(const MyApp());
 }
 
@@ -204,9 +204,9 @@ class _MyAppState extends State<MyApp> {
   late VideoPlayerController controller;
 
   @override
-  void initState() {   
+  void initState() {
     super.initState();
-   
+
     //controller = VideoPlayerController.file(File("E:\\test_youtube.mp4"));
     controller = VideoPlayerController.network("https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4");
 
@@ -232,9 +232,9 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        
-        body: JkVideoControlPanel(controller, 
-          showClosedCaptionButton: true, 
+
+        body: JkVideoControlPanel(controller,
+          showClosedCaptionButton: true,
           showFullscreenButton: true,
           showVolumeButton: true
         ),
