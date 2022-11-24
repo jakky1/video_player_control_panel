@@ -1,3 +1,7 @@
+## 1.0.5
+
+* refine pubspec.yaml
+
 ## 1.0.4
 
 * Add controller.dispose() in state.dispose() for JkVideoPlaylistPlayer
