@@ -1,3 +1,7 @@
+## 1.0.6
+
+* remove unused plugin
+
 ## 1.0.5
 
 * refine pubspec.yaml
