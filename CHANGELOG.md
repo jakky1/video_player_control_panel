@@ -1,6 +1,7 @@
 ## 1.0.6
 
 * remove unused plugin
+* fix keyevent propagation issue
 
 ## 1.0.5
 

@@ -26,7 +26,7 @@ class JkVideoControlPanel extends StatefulWidget {
   ValueNotifier<bool>? _showClosedCaptions;
 
   JkVideoControlPanel(this.controller, {
-    super.key, 
+    super.key,
     this.showFullscreenButton = true,
     this.showClosedCaptionButton = true,
     this.showVolumeButton = true,
@@ -36,15 +36,15 @@ class JkVideoControlPanel extends StatefulWidget {
     }) : _isFullscreen = false;
 
   static JkVideoControlPanel _fullscreen(VideoPlayerController controller, {
-      Key? key, 
-      required ValueNotifier<bool>? showClosedCaptions, 
+      Key? key,
+      required ValueNotifier<bool>? showClosedCaptions,
       required bool showVolumeButton,
       VoidCallback? onPrevClicked,
       VoidCallback? onNextClicked,
       //this.onPlayEnded, // don't pass to fullscreen widget
     }) {
-    var c = JkVideoControlPanel(controller, 
-      key: key, 
+    var c = JkVideoControlPanel(controller,
+      key: key,
       showVolumeButton: showVolumeButton,
       onPrevClicked: onPrevClicked,
       onNextClicked: onNextClicked,
@@ -53,7 +53,7 @@ class JkVideoControlPanel extends StatefulWidget {
     c._showClosedCaptions = showClosedCaptions;
     return c;
   }
-  
+
   @override
   State<JkVideoControlPanel> createState() => _JkVideoControlPanelState();
 }
@@ -75,15 +75,15 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
   final playing = ValueNotifier<bool>(false);
   final buffering = ValueNotifier<bool>(false);
   final volumeValue = ValueNotifier<double>(1.0);
-  final controllerValue = ValueNotifier<int>(0); // used to notify fullscreen widget that controller changed 
-  
+  final controllerValue = ValueNotifier<int>(0); // used to notify fullscreen widget that controller changed
+
   final hasClosedCaptionFile = ValueNotifier<bool>(false);
   late final ValueNotifier<bool> showClosedCaptions;
   final currentCaption = ValueNotifier<String>("");
-  
+
   bool isMouseMode = false;
   final panelVisibility = ValueNotifier<bool>(false); // is panel visible, used to show/hide mouse cursor, and enable/disable click on buttons on panel
-  
+
   bool isDraggingVolumeBar = false;
   bool isMouseInVolumeBar = false;
 
@@ -97,17 +97,17 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
-        ]);        
+        ]);
       } else if (aspectRatio.value < 0.95) {
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
-        ]);      
+        ]);
       }
     }
   }
 
-  void onPlayerValueChanged() { 
+  void onPlayerValueChanged() {
     final playerValue = widget.controller.value;
     bool isInitializing = !playerValue.isInitialized && !playerValue.hasError;
 
@@ -130,8 +130,8 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       onAspectRatioChanged();
     }
 
-    if (playerValue.isInitialized 
-          && playerValue.duration.inMilliseconds > 0 
+    if (playerValue.isInitialized
+          && playerValue.duration.inMilliseconds > 0
           && playerValue.position.compareTo(playerValue.duration) >= 0) {
       if (!isPlayEnded) {
         isPlayEnded = true;
@@ -144,7 +144,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
           // which make [video_player] throw Error when it wait seekTo() finished and then call getPosition()...
           Future.delayed(const Duration(milliseconds: 300)).then((value) {
             if (isPlayEnded && widget.onPlayEnded != null) widget.onPlayEnded!();
-          });          
+          });
         }
       }
     } else {
@@ -182,19 +182,19 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
             child: ValueListenableBuilder(
               valueListenable: controllerValue,
               builder: ((context, value, child) {
-                return JkVideoControlPanel._fullscreen(widget.controller, 
-                  key: widget.key, 
-                  showClosedCaptions: showClosedCaptions, 
+                return JkVideoControlPanel._fullscreen(widget.controller,
+                  key: widget.key,
+                  showClosedCaptions: showClosedCaptions,
                   showVolumeButton: widget.showVolumeButton,
                   onPrevClicked: widget.onPrevClicked,
                   onNextClicked: widget.onNextClicked,
                 );
-                
+
               }),
           ),
           );
         }),
-      ).then((value) {        
+      ).then((value) {
         restoreOrientation(); // when exit fullscreen, unlock screen orientation settings
         isFullscreenVisible = false;
       });
@@ -215,7 +215,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       iconSize = min / 15;
     }
 
-    textSize = iconSize * 0.55; 
+    textSize = iconSize * 0.55;
     setState(() {});
   }
 
@@ -234,7 +234,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.removeListener(onPlayerValueChanged);
       widget.controller.addListener(onPlayerValueChanged);
-      onPlayerValueChanged();      
+      onPlayerValueChanged();
       setState(() {});
       Future.delayed(Duration.zero).then((value) {
         controllerValue.value ++; //notify fullscreen widget to rebuild, async delay is needed
@@ -255,7 +255,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
   String duration2TimeStr(Duration duration) {
     if (widget.controller.value.duration.inHours > 0) {
       return sprintf("%02d:%02d:%02d", [duration.inHours, duration.inMinutes % 60, duration.inSeconds % 60]);
-    } 
+    }
     return sprintf("%02d:%02d", [duration.inMinutes % 60, duration.inSeconds % 60]);
   }
 
@@ -356,10 +356,10 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       valueListenable: displayPosition,
       builder: (context, value, child) {
         return Slider.adaptive(
-          value: displayPosition.value < 0 ? 0 : displayPosition.value.toDouble(), 
-          min: 0, 
-          max: duration.value.inMilliseconds.toDouble(), 
-          onChanged: (double value) {  
+          value: displayPosition.value < 0 ? 0 : displayPosition.value.toDouble(),
+          min: 0,
+          max: duration.value.inMilliseconds.toDouble(),
+          onChanged: (double value) {
             showPanel();
             displayPosition.value = value.toInt();
             widget.controller.seekTo(Duration(milliseconds: value.toInt()));
@@ -386,7 +386,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     );
 
     Widget closedCaptionButton = ValueListenableBuilder(
-      valueListenable: hasClosedCaptionFile, 
+      valueListenable: hasClosedCaptionFile,
       builder: (context, value, child) {
         if (!value) return const SizedBox.shrink();
         return ValueListenableBuilder(
@@ -405,7 +405,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         );
       },
     );
-    
+
 
     Widget volumePanel = MouseRegion(
       onEnter: (_) {
@@ -420,7 +420,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       child: Stack(children: [
         Positioned.fill(
           child: FadeTransition(
-            opacity: volumeAnimation, 
+            opacity: volumeAnimation,
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black54,
@@ -451,7 +451,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
                     widget.controller.setVolume(value / 100);
                     showPanel(); // keep panel visible during dragging volume bar
                   }
-                );                
+                );
               },
             ),
           ),
@@ -498,7 +498,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         if (widget.showClosedCaptionButton) closedCaptionButton,
         if (widget.showFullscreenButton && !kIsWeb) fullscreenButton, //TODO: fullscreen makes video black after exit fullscreen in web environment, so remove it
       ],),
-      
+
       seekBar,
     ]);
 
@@ -539,7 +539,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     );
 
     Widget bufferingWidget = ValueListenableBuilder<bool>(
-      valueListenable: buffering, 
+      valueListenable: buffering,
       builder: (context, value, child) {
         if (value) {
           return Center(
@@ -561,14 +561,14 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         if (!isDesktop) Container(color: Colors.black38), // translucent black background for panel (only mobile)
         gestureWidget,
         Positioned(left: 0, bottom: 0, right: 0, child: bottomPanel),
-        if (!isDesktop) Center(child: createPlayPauseButton(true, iconSize * 2.5)),      
-        if (!isDesktop && widget.onPrevClicked != null) 
+        if (!isDesktop) Center(child: createPlayPauseButton(true, iconSize * 2.5)),
+        if (!isDesktop && widget.onPrevClicked != null)
           Align(alignment: const FractionalOffset(0.15, 0.5), child: IconButton(onPressed: widget.onPrevClicked, icon: const Icon(Icons.skip_previous), iconSize: iconSize*1.5, color: Colors.white,)),
-        if (!isDesktop && widget.onNextClicked != null) 
+        if (!isDesktop && widget.onNextClicked != null)
           Align(alignment: const FractionalOffset(0.85, 0.5), child: IconButton(onPressed: widget.onNextClicked, icon: const Icon(Icons.skip_next), iconSize: iconSize*1.5, color: Colors.white,)),
-      ], 
+      ],
     );
-    
+
     panelWidget = FadeTransition(opacity: panelAnimation, child: panelWidget);
 
     panelWidget = ValueListenableBuilder(
@@ -588,42 +588,56 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       focusNode: focusNode,
       child: panelWidget,
       onKeyEvent: (node, event) {
-        if (event is KeyUpEvent) return KeyEventResult.handled;
-        if (event.logicalKey == LogicalKeyboardKey.space) {
-          if (!widget.controller.value.isInitialized) return KeyEventResult.handled;
-          if (event is KeyDownEvent) {
-            showPanel();
-            togglePlayPause();
-          }
-        } else if (event.logicalKey == LogicalKeyboardKey.keyF) {
-          if (event is KeyDownEvent && widget.showFullscreenButton) {
-            doClickFullScreenButton(context);
+        if (event.logicalKey == LogicalKeyboardKey.keyF) {
+          if (widget.showFullscreenButton) {
+            if (event is KeyUpEvent) {
+              doClickFullScreenButton(context);
+            }
+            return KeyEventResult.handled;
           }
         } else if (event.logicalKey == LogicalKeyboardKey.escape) {
-          if (event is KeyDownEvent && widget._isFullscreen) {
-            doClickFullScreenButton(context);
+          if (widget._isFullscreen) {
+            if (event is KeyUpEvent) {
+              doClickFullScreenButton(context);
+            }
+            return KeyEventResult.handled;
+          }
+        } else if (event.logicalKey == LogicalKeyboardKey.space) {
+          if (widget.controller.value.isInitialized) {
+            if (event is KeyUpEvent) {
+              showPanel();
+              togglePlayPause();
+            }
+            return KeyEventResult.handled;
           }
         } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-          incrementalSeek(-5000);
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-          incrementalSeek(5000);
-        } else if (event.logicalKey == LogicalKeyboardKey.keyM) {
-          if (event is KeyDownEvent && isDesktop) {
-            toggleVolumeMute();
-            showPanel();
+          if (widget.controller.value.isInitialized) {
+            if (event is! KeyUpEvent) incrementalSeek(-5000);
+            return KeyEventResult.handled;
           }
-        } else {
-          return KeyEventResult.ignored;
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          if (widget.controller.value.isInitialized) {
+            if (event is! KeyUpEvent) incrementalSeek(5000);
+            return KeyEventResult.handled;
+          }
+        } else if (event.logicalKey == LogicalKeyboardKey.keyM) {
+          if (isDesktop) {
+            if (event is KeyUpEvent) {
+              toggleVolumeMute();
+              showPanel();
+            }
+            return KeyEventResult.handled;
+          }
         }
-        return KeyEventResult.handled;        
+        return KeyEventResult.ignored;
       },
     );
 
     panelWidget = ValueListenableBuilder<bool>(
-      valueListenable: panelVisibility, 
+      valueListenable: panelVisibility,
       builder: ((context, value, child) {
         return MouseRegion(
-          // TODO: this not work... 
+          // TODO: this not work...
           // issue: https://github.com/flutter/flutter/issues/76622
           // because when set cursor to [none] after mouse freeze 2 seconds,
           // mouse must move 1 pixel to make MouseRegion apply the cursor settings...
@@ -640,14 +654,14 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         );
       }),
       child: panelWidget,
-    );    
+    );
 
     Widget closedCaptionWidget = ValueListenableBuilder<bool>(
       valueListenable: showClosedCaptions,
       builder: (context, value, child) {
         if (!value) return const SizedBox.shrink();
         return ValueListenableBuilder<String>(
-          valueListenable: currentCaption, 
+          valueListenable: currentCaption,
           builder: (context, value, child) {
             return LayoutBuilder(builder: (context, constraints) {
               double textSize = constraints.maxWidth * 0.028;
@@ -656,13 +670,13 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
                 child: Container(
                   margin: EdgeInsets.all(textSize / 2),
                   child: Text(value, maxLines: 2, textAlign: TextAlign.center, style: TextStyle(fontSize: textSize, color: Colors.white, backgroundColor: Colors.black54)),
-                ),           
-              );              
+                ),
+              );
             });
           },
-        );        
+        );
       }
-    );    
+    );
 
     Widget videoWidget = ValueListenableBuilder(
       valueListenable: aspectRatio,
@@ -678,7 +692,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         );
       },
     );
-    
+
 
     Widget allWidgets = Stack(
       children: [
