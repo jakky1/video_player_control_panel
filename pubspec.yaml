@@ -18,7 +18,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   plugin_platform_interface: ^2.0.2
+
   video_player: ^2.4.7
   video_player_platform_interface: ^5.1.1
   fullscreen_window: ^1.0.3
