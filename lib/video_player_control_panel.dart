@@ -179,7 +179,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         builder: (context) {
           // NOTE: when setState() called in didUpdateWidget() in non-fullscreen widget, this will be called here... why ? but it sounds good here!
           return Material(
-            child: ValueListenableBuilder(
+            child: ValueListenableBuilder<int>(
               valueListenable: controllerValue,
               builder: ((context, value, child) {
                 return JkVideoControlPanel._fullscreen(widget.controller,
@@ -385,11 +385,11 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       onPressed: () => doClickFullScreenButton(context),
     );
 
-    Widget closedCaptionButton = ValueListenableBuilder(
+    Widget closedCaptionButton = ValueListenableBuilder<bool>(
       valueListenable: hasClosedCaptionFile,
       builder: (context, value, child) {
         if (!value) return const SizedBox.shrink();
-        return ValueListenableBuilder(
+        return ValueListenableBuilder<bool>(
           valueListenable: showClosedCaptions,
           builder: (context, value, child) {
             return IconButton(
@@ -571,7 +571,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
     panelWidget = FadeTransition(opacity: panelAnimation, child: panelWidget);
 
-    panelWidget = ValueListenableBuilder(
+    panelWidget = ValueListenableBuilder<bool>(
       valueListenable: panelVisibility,
       builder: (context, value, child) => IgnorePointer(ignoring: !value, child: child),
       child: panelWidget,
@@ -678,7 +678,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       }
     );
 
-    Widget videoWidget = ValueListenableBuilder(
+    Widget videoWidget = ValueListenableBuilder<double>(
       valueListenable: aspectRatio,
       builder: (context, value, child) {
         return Center(

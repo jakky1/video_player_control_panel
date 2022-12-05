@@ -1,3 +1,7 @@
+## 1.0.7
+
+* change sdk version limitation
+
 ## 1.0.6
 
 * remove unused plugin
