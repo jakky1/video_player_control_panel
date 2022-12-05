@@ -1,3 +1,7 @@
+## 1.0.8
+
+* update dependencies
+
 ## 1.0.7
 
 * change sdk version limitation
