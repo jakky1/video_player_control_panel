@@ -29,7 +29,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  video_player_control_panel: ^1.0.0
+  video_player_control_panel: ^1.1.0
 ```
 
 Or
