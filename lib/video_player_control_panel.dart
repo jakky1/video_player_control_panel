@@ -12,6 +12,13 @@ import 'package:sprintf/sprintf.dart';
 
 import 'package:video_player/video_player.dart';
 
+/// Default restored orientation when exit fullscreen
+const List<DeviceOrientation> _defaultRestoreOrientations = [
+  DeviceOrientation.landscapeRight,
+  DeviceOrientation.landscapeLeft,
+  DeviceOrientation.portraitUp,
+  DeviceOrientation.portraitDown,
+];
 
 // ignore: must_be_immutable
 class JkVideoControlPanel extends StatefulWidget {
@@ -21,7 +28,10 @@ class JkVideoControlPanel extends StatefulWidget {
   final bool showVolumeButton; // only show in desktop
   final VoidCallback? onPrevClicked;
   final VoidCallback? onNextClicked;
-  final VoidCallback? onPlayEnded; // won't be called if controller set lopping = true
+  final VoidCallback?
+      onPlayEnded; // won't be called if controller set lopping = true
+  /// Setting the orientation to restore when exit full screen
+  final List<DeviceOrientation> restoreOrientations;
   late bool _isFullscreen;
   ValueNotifier<bool>? _showClosedCaptions;
 
@@ -33,6 +43,7 @@ class JkVideoControlPanel extends StatefulWidget {
     this.onPrevClicked,
     this.onNextClicked,
     this.onPlayEnded,
+    this.restoreOrientations = _defaultRestoreOrientations,
     }) : _isFullscreen = false;
 
   static JkVideoControlPanel _fullscreen(VideoPlayerController controller, {
@@ -162,14 +173,10 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     }
   }
 
-  void restoreOrientation() {
+  void restoreOrientation(List<DeviceOrientation> orientations) {
     if (isDesktop) return; //only for mobile
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+
+    SystemChrome.setPreferredOrientations(orientations);
   }
 
   void doClickFullScreenButton(BuildContext context) {
@@ -195,7 +202,8 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
           );
         }),
       ).then((value) {
-        restoreOrientation(); // when exit fullscreen, unlock screen orientation settings
+        restoreOrientation(widget
+            .restoreOrientations); // when exit fullscreen, unlock screen orientation settings
         isFullscreenVisible = false;
       });
     } else {
