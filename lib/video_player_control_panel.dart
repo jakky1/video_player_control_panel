@@ -27,7 +27,7 @@ class JkVideoControlPanel extends StatefulWidget {
 
   // orientation configuration after exit fullscreen
   // default value will restore to system default orientation
-  final List<DeviceOrientation> orientationAfterExitFullscreen;
+  final List<DeviceOrientation> restoreOrientations;
 
   JkVideoControlPanel(this.controller, {
     super.key,
@@ -37,7 +37,7 @@ class JkVideoControlPanel extends StatefulWidget {
     this.onPrevClicked,
     this.onNextClicked,
     this.onPlayEnded,
-    this.orientationAfterExitFullscreen = const [],
+    this.restoreOrientations = const [],
     }) : _isFullscreen = false;
 
   static JkVideoControlPanel _fullscreen(VideoPlayerController controller, {
@@ -169,7 +169,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
   void restoreOrientation() {
     if (isDesktop) return; //only for mobile
-    SystemChrome.setPreferredOrientations(widget.orientationAfterExitFullscreen);
+    SystemChrome.setPreferredOrientations(widget.restoreOrientations);
   }
 
   void doClickFullScreenButton(BuildContext context) {
