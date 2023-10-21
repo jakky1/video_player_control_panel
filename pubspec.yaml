@@ -3,7 +3,7 @@ description: A control panel laid on top of VideoPlayer. User can do play / paus
 homepage: https://github.com/jakky1/video_player_control_panel
 repository: https://github.com/jakky1/video_player_control_panel
 issue_tracker: https://github.com/jakky1/video_player_control_panel/issues
-version: 1.1.0
+version: 1.1.1
 
 platforms:
   windows:

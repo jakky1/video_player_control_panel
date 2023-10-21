@@ -1,3 +1,7 @@
+## 1.1.1
+
+* fix seeking issues
+
 ## 1.1.0
 
 * update dependencies
