@@ -123,9 +123,13 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
     duration.value = playerValue.duration;
     playing.value = playerValue.isPlaying;
-    displayPosition.value = playerValue.position.inMilliseconds;
     volumeValue.value = playerValue.volume;
     buffering.value = playerValue.isBuffering || isInitializing;
+
+    // don't update progress by player's position when seeking
+    if (!m_delaySeeking) {
+      displayPosition.value = playerValue.position.inMilliseconds;
+    }
 
     hasClosedCaptionFile.value = widget.controller.closedCaptionFile != null;
     currentCaption.value = playerValue.caption.text;
@@ -295,6 +299,30 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     }
   }
 
+  int m_lastSeekTimestamp = 0;
+  Timer? m_delaySeekTimer;
+  bool m_delaySeeking = false;
+  Future<void> doSeek(int ms) async {
+    m_delaySeekTimer?.cancel();
+    int now = DateTime.now().millisecondsSinceEpoch;
+    int elapsed = now - m_lastSeekTimestamp;
+    m_lastSeekTimestamp = now;
+    m_delaySeeking = true;
+
+    if (elapsed > 300 || elapsed < 0) {
+      await widget.controller.seekTo(Duration(milliseconds: ms));
+      m_delaySeeking = false;
+    } else {
+      const delay = Duration(milliseconds: 300);
+      m_delaySeekTimer = Timer.periodic(delay, (timer) async {
+        m_delaySeekTimer = null;
+        timer.cancel();
+        await widget.controller.seekTo(Duration(milliseconds: ms));
+        m_delaySeeking = false;
+      });
+    }
+  }
+
   void incrementalSeek(int ms) async {
     showPanel();
     int dst = displayPosition.value + ms;
@@ -305,7 +333,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     }
 
     displayPosition.value = dst;
-    await widget.controller.seekTo(Duration(milliseconds: displayPosition.value));
+    await doSeek(dst);
   }
 
   Widget createPlayPauseButton(bool isCircle, double size) {
@@ -356,13 +384,14 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       valueListenable: displayPosition,
       builder: (context, value, child) {
         return Slider.adaptive(
+          focusNode: g_AlwaysDisabledFocusNode,
           value: displayPosition.value < 0 ? 0 : displayPosition.value.toDouble(),
           min: 0,
           max: duration.value.inMilliseconds.toDouble(),
           onChanged: (double value) {
             showPanel();
             displayPosition.value = value.toInt();
-            widget.controller.seekTo(Duration(milliseconds: value.toInt()));
+            doSeek(value.toInt());
           },
         );
       },
@@ -706,3 +735,11 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     return allWidgets;
   }
 }
+
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}
+
+final g_AlwaysDisabledFocusNode = AlwaysDisabledFocusNode();
