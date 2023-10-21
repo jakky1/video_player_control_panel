@@ -226,7 +226,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
   @override
   void initState() {
     super.initState();
-    showClosedCaptions = widget._showClosedCaptions ?? ValueNotifier<bool>(true);
+    showClosedCaptions = widget._showClosedCaptions ?? ValueNotifier<bool>(false);
     widget.controller.addListener(onPlayerValueChanged);
     evaluateTextIconSize();
     onPlayerValueChanged();
