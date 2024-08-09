@@ -44,15 +44,6 @@ dependencies:
 
 # Usage
 
-## register player first
-
-Before starting play media, you should add the following code:
-```dart
-import 'package:video_player_win/video_player_win_plugin.dart';
-
-if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
-```
-
 ## video / audio playback
 
 Play from network source:
@@ -174,7 +165,6 @@ import 'package:sprintf/sprintf.dart';
 
 
 void main() {
-  if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
   runApp(const MyApp());
 }
 
