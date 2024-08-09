@@ -12,14 +12,16 @@ class JkVideoPlaylistPlayer extends StatefulWidget {
   final List<String> playlist;
   final bool isLooping;
   final bool autoplay;
+  final Color? bgColor;
 
   const JkVideoPlaylistPlayer({
     super.key,
     required this.playlist,
     this.isLooping = false,
     this.autoplay = true,
+    this.bgColor,
   });
-  
+
   @override
   State<StatefulWidget> createState() => _JkVideoPlaylistPlayerState();
 }
@@ -43,7 +45,7 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
   void playVideo(int index) {
     nowPlayIndex = index;
     controller?.dispose();
-    
+
     var path = widget.playlist[index];
     controller = VideoPlayerController.network(path);
 
@@ -72,7 +74,7 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
   void initState() {
     super.initState();
     playVideo(0);
-  }  
+  }
 
   @override
   void didUpdateWidget(JkVideoPlaylistPlayer oldWidget) {
@@ -89,10 +91,11 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
   @override
   Widget build(BuildContext context) {
     return JkVideoControlPanel(
-      controller!, 
-      showClosedCaptionButton: true, 
+      controller!,
+      showClosedCaptionButton: true,
       showFullscreenButton: true,
       showVolumeButton: true,
+      bgColor: widget.bgColor,
       onPrevClicked: (nowPlayIndex <= 0) ? null :  () {
         playPrevVideo();
       },
@@ -109,10 +112,10 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
             } else {
               playVideo(0);
             }
-          }          
+          }
         } else {
           playNextVideo();
-        }        
+        }
       },
     );
   }

@@ -22,6 +22,7 @@ class JkVideoControlPanel extends StatefulWidget {
   final VoidCallback? onPrevClicked;
   final VoidCallback? onNextClicked;
   final VoidCallback? onPlayEnded; // won't be called if controller set lopping = true
+  final Color? bgColor;
   late bool _isFullscreen;
   ValueNotifier<bool>? _showClosedCaptions;
 
@@ -34,6 +35,7 @@ class JkVideoControlPanel extends StatefulWidget {
     this.showFullscreenButton = true,
     this.showClosedCaptionButton = true,
     this.showVolumeButton = true,
+    this.bgColor = Colors.black,
     this.onPrevClicked,
     this.onNextClicked,
     this.onPlayEnded,
@@ -725,7 +727,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
     Widget allWidgets = Stack(
       children: [
-        Container(color: Colors.black), // video_player open file need time, so put a black bg here
+        Container(color: widget.bgColor), // video_player open file need time, so put a black bg here
         videoWidget,
         bufferingWidget,
         panelWidget,
