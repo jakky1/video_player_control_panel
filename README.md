@@ -47,7 +47,7 @@ dependencies:
 ## register player first
 
 Before starting play media, you should add the following code:
-```
+```dart
 import 'package:video_player_win/video_player_win_plugin.dart';
 
 if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
@@ -56,7 +56,7 @@ if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
 ## video / audio playback
 
 Play from network source:
-```
+```dart
 var controller = VideoPlayerController.network("https://www.your-web.com/sample.mp4");
 controller.initialize().then((value) {
   if (controller.value.isInitialized) {
@@ -70,12 +70,12 @@ controller.initialize().then((value) {
 ```
 
 Play from file:
-```
+```dart
 var controller = VideoPlayerController.file(File("E:\\test.mp4"));
 ```
 
 Load subtitle:
-```
+```dart
 String content = _getYourSubtitleContent();
 var file = SubRipCaptionFile(content); // if is a subrip (.srt) file
 var file = WebVTTCaptionFile(content); // if is a WebVTT (.vtt) file
@@ -83,7 +83,7 @@ controller.setClosedCaptionFile( Future.value(file) );
 ```
 
 If the file is a video, build a display widget to show video frames with a control panel:
-```
+```dart
 Widget build(BuildContext context) {
   return JkVideoControlPanel(controller,
     showClosedCaptionButton: true,
@@ -121,7 +121,7 @@ Widget build(BuildContext context) {
 - free resource: ``` controller.dispose(); ```
 
 # Listen playback events and values ( if needed)
-```
+```dart
 void onPlaybackEvent() {
 	final value = controller.value;
 	// value.isInitialized (bool)
@@ -136,13 +136,13 @@ controller.addListener(onPlaybackEvent);
 controller.removeListener(onPlaybackEvent); // remember to removeListener()
 ```
 ## Release resource
-```
+```dart
 controller.dispose();
 ```
 
 ## Play a playlist in a simple way
 No need to use controller !
-```
+```dart
 final m_playlist = [
   "https://www.test.com/test1.mp4",
   "https://www.test.com/test2.mp4",
@@ -162,7 +162,7 @@ Widget build(BuildContext context) {
 
 ## Example
 
-```
+```dart
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -236,7 +236,8 @@ class _MyAppState extends State<MyApp> {
         body: JkVideoControlPanel(controller,
           showClosedCaptionButton: true,
           showFullscreenButton: true,
-          showVolumeButton: true
+          showVolumeButton: true,
+          bgColor: Colors.black,
         ),
       ),
     );

@@ -1,3 +1,7 @@
+## 1.1.2
+
+* add 'bgColor' property
+
 ## 1.1.1
 
 * fix seeking issues
