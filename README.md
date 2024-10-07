@@ -150,6 +150,35 @@ Widget build(BuildContext context) {
 }
 ```
 
+## Support D-pad navigation in AndroidTV / AppleTV
+
+To enable D-pad navigation to switch focus between buttons, please set property `isTV` to `true`.
+
+```dart
+    Widget player = JkVideoControlPanel(
+      controller!,
+      isTV: true,  // <----- here
+    );
+```
+or
+```dart
+    Widget player = JkVideoPlaylistPlayer(
+      playlist: ["a.mp4", "b.mp4"],
+      isTV: true,  // <----- here
+    );
+```
+
+If your application may run on TV and other non-TV devices, you should check if the device is a TV by yourself:
+```dart
+var deviceInfo = DeviceInfoPlugin();
+var androidInfo = await deviceInfo.androidInfo;
+bool isTV = androidInfo.systemFeatures.contains('android.software.leanback');
+```
+and add package `device_info_plus` in `pubspec.yaml`:
+```yaml
+dependencies:
+  device_info_plus:
+```
 
 ## Example
 
