@@ -26,6 +26,11 @@ class JkVideoControlPanel extends StatefulWidget {
   late bool _isFullscreen;
   ValueNotifier<bool>? _showClosedCaptions;
 
+  /// set to 'true' if running on AndroidTV / AppleTV
+  /// to make buttons layout are the same with desktop
+  /// and use D-pad (left/up/right/down) to switch focus between buttons
+  final bool isTV;
+
   // orientation configuration after exit fullscreen
   // default value will restore to system default orientation
   final List<DeviceOrientation> restoreOrientations;
@@ -35,6 +40,7 @@ class JkVideoControlPanel extends StatefulWidget {
     this.showFullscreenButton = true,
     this.showClosedCaptionButton = true,
     this.showVolumeButton = true,
+    this.isTV = false,
     this.bgColor = Colors.black,
     this.onPrevClicked,
     this.onNextClicked,
@@ -68,7 +74,10 @@ class JkVideoControlPanel extends StatefulWidget {
 class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerProviderStateMixin {
 
   final bool isDesktop = kIsWeb || Platform.isWindows;
-  final focusNode = FocusNode();
+  late final bool isDesktopUI = isDesktop || widget.isTV;
+  final panelFocusNode = FocusNode();
+  final playPauseFocusNode = FocusNode();
+  final Color buttonFocusColor = Colors.white.withOpacity(0.5);
 
   late final AnimationController panelAnimController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
   late final panelAnimation = panelAnimController.drive(Tween<double>(begin: 0.0, end: 1.0));
@@ -250,7 +259,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
   @override
   void dispose() {
-    focusNode.dispose();
+    panelFocusNode.dispose();
     widget.controller.removeListener(onPlayerValueChanged);
     panelAnimController.dispose();
     volumeAnimController.dispose();
@@ -276,6 +285,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       if (!playing.value) return; //don't auto hide when paused
       panelVisibility.value = false;
       panelAnimController.reverse();
+      panelFocusNode.requestFocus();
       _hidePanelTimer = null;
     });
   }
@@ -343,6 +353,8 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       valueListenable: playing,
       builder: (context, value, child) {
         return IconButton(
+          focusNode: playPauseFocusNode,
+          focusColor: buttonFocusColor,
           iconSize: size,
           icon: Icon(
             isCircle ? (value ? Icons.pause_circle : Icons.play_circle)
@@ -410,6 +422,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     );
 
     Widget fullscreenButton = IconButton(
+      focusColor: buttonFocusColor,
       color: Colors.white,
       iconSize: iconSize,
       icon: Icon(widget._isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen),
@@ -424,6 +437,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
           valueListenable: showClosedCaptions,
           builder: (context, value, child) {
             return IconButton(
+              focusColor: buttonFocusColor,
               color: Colors.white,
               iconSize: iconSize,
               icon: Icon(value ? Icons.subtitles : Icons.subtitles_off_outlined),
@@ -502,33 +516,39 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
       ]),
     );
 
-    Widget? bottomPrevButton = (isDesktop && widget.onPrevClicked != null) ? IconButton(
+    Widget? bottomPrevButton = (isDesktopUI && widget.onPrevClicked != null) ? IconButton(
           iconSize: iconSize,
+          focusColor: buttonFocusColor,
           color: Colors.white,
           icon: const Icon(Icons.skip_previous),
           onPressed: widget.onPrevClicked,
     ) : null;
 
-    Widget? bottomNextButton = (isDesktop && widget.onNextClicked != null) ? IconButton(
+    Widget? bottomNextButton = (isDesktopUI && widget.onNextClicked != null) ? IconButton(
           iconSize: iconSize,
+          focusColor: buttonFocusColor,
           color: Colors.white,
           icon: const Icon(Icons.skip_next),
           onPressed: widget.onNextClicked,
     ) : null;
 
     Widget bottomPanel = Column(children: [
-      Row(children: [
-        if (isDesktop) createPlayPauseButton(false, iconSize),
-        if (isDesktop && widget.onPrevClicked != null) bottomPrevButton!,
-        if (isDesktop && widget.onNextClicked != null) bottomNextButton!,
-        positionText,
-        Text(" / ", style: TextStyle(fontSize: textSize, color: Colors.white)),
-        durationText,
-        const Spacer(),
-        if (isDesktop && widget.showVolumeButton) volumePanel,
-        if (widget.showClosedCaptionButton) closedCaptionButton,
-        if (widget.showFullscreenButton && !kIsWeb) fullscreenButton, //TODO: fullscreen makes video black after exit fullscreen in web environment, so remove it
-      ],),
+      // button row should be included in this FocusScope
+      // without FocusScope, focus cannot switching across Spacer()
+      FocusScope(
+        child: Row(children: [
+          if (isDesktopUI) createPlayPauseButton(false, iconSize),
+          if (isDesktopUI && widget.onPrevClicked != null) bottomPrevButton!,
+          if (isDesktopUI && widget.onNextClicked != null) bottomNextButton!,
+          positionText,
+          Text(" / ", style: TextStyle(fontSize: textSize, color: Colors.white)),
+          durationText,
+          const Spacer(),
+          if (isDesktop && widget.showVolumeButton) volumePanel,
+          if (widget.showClosedCaptionButton) closedCaptionButton,
+          if (widget.showFullscreenButton && !kIsWeb) fullscreenButton, //TODO: fullscreen makes video black after exit fullscreen in web environment, so remove it
+        ],),
+      ),
 
       seekBar,
     ]);
@@ -539,8 +559,8 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          //colors: !isDesktop ? <Color>[Colors.transparent, Colors.transparent] : <Color>[Colors.transparent, Colors.black87]),
-          colors: <Color>[Colors.transparent, isDesktop ? Colors.black87 : Colors.transparent]),
+          //colors: !isDesktopUI ? <Color>[Colors.transparent, Colors.transparent] : <Color>[Colors.transparent, Colors.black87]),
+          colors: <Color>[Colors.transparent, isDesktopUI ? Colors.black87 : Colors.transparent]),
       ),
       child: bottomPanel,
     );
@@ -565,7 +585,7 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
           showPanel();
         }
         lastTapDownTime = now;
-        focusNode.requestFocus();
+        panelFocusNode.requestFocus();
       },
     );
 
@@ -589,13 +609,13 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
     Widget panelWidget = Stack(
       alignment: Alignment.center,
       children: [
-        if (!isDesktop) Container(color: Colors.black38), // translucent black background for panel (only mobile)
+        if (!isDesktopUI) Container(color: Colors.black38), // translucent black background for panel (only mobile)
         gestureWidget,
         Positioned(left: 0, bottom: 0, right: 0, child: bottomPanel),
-        if (!isDesktop) Center(child: createPlayPauseButton(true, iconSize * 2.5)),
-        if (!isDesktop && widget.onPrevClicked != null)
+        if (!isDesktopUI) Center(child: createPlayPauseButton(true, iconSize * 2.5)),
+        if (!isDesktopUI && widget.onPrevClicked != null)
           Align(alignment: const FractionalOffset(0.15, 0.5), child: IconButton(onPressed: widget.onPrevClicked, icon: const Icon(Icons.skip_previous), iconSize: iconSize*1.5, color: Colors.white,)),
-        if (!isDesktop && widget.onNextClicked != null)
+        if (!isDesktopUI && widget.onNextClicked != null)
           Align(alignment: const FractionalOffset(0.85, 0.5), child: IconButton(onPressed: widget.onNextClicked, icon: const Icon(Icons.skip_next), iconSize: iconSize*1.5, color: Colors.white,)),
       ],
     );
@@ -616,9 +636,36 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
 
     panelWidget = Focus(
       autofocus: true,
-      focusNode: focusNode,
+      focusNode: panelFocusNode,
       child: panelWidget,
       onKeyEvent: (node, event) {
+
+        if (widget.isTV) {
+          // if running in TV, enable D-pad navigation between buttons
+          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            if (panelFocusNode.hasPrimaryFocus) {
+              playPauseFocusNode.requestFocus();
+              showPanel(); // keep panel visible during focus switching between buttons
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            if (!panelFocusNode.hasPrimaryFocus) {
+              panelFocusNode.requestFocus();
+              showPanel(); // keep panel visible during focus switching between buttons
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          } else if (!panelFocusNode.hasPrimaryFocus) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft
+                || event.logicalKey == LogicalKeyboardKey.arrowRight
+                || event.logicalKey == LogicalKeyboardKey.select) {
+              showPanel(); // keep panel visible during focus switching between buttons
+              return KeyEventResult.ignored;
+            }
+          }
+        }
+
         if (event.logicalKey == LogicalKeyboardKey.keyF) {
           if (widget.showFullscreenButton) {
             if (event is KeyUpEvent) {
@@ -633,7 +680,8 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
             }
             return KeyEventResult.handled;
           }
-        } else if (event.logicalKey == LogicalKeyboardKey.space) {
+        } else if (event.logicalKey == LogicalKeyboardKey.space
+                || event.logicalKey == LogicalKeyboardKey.select) {
           if (widget.controller.value.isInitialized) {
             if (event is KeyUpEvent) {
               showPanel();
@@ -652,13 +700,11 @@ class _JkVideoControlPanelState extends State<JkVideoControlPanel> with TickerPr
             return KeyEventResult.handled;
           }
         } else if (event.logicalKey == LogicalKeyboardKey.keyM) {
-          if (isDesktop) {
-            if (event is KeyUpEvent) {
-              toggleVolumeMute();
-              showPanel();
-            }
-            return KeyEventResult.handled;
+          if (event is KeyUpEvent) {
+            toggleVolumeMute();
+            showPanel();
           }
+          return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
       },

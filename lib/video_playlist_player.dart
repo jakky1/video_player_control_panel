@@ -14,11 +14,17 @@ class JkVideoPlaylistPlayer extends StatefulWidget {
   final bool autoplay;
   final Color? bgColor;
 
+  /// set to 'true' if running on AndroidTV / AppleTV
+  /// to make buttons layout are the same with desktop
+  /// and use D-pad (left/up/right/down) to switch focus between buttons
+  final bool isTV;
+
   const JkVideoPlaylistPlayer({
     super.key,
     required this.playlist,
     this.isLooping = false,
     this.autoplay = true,
+    this.isTV = false,
     this.bgColor,
   });
 
@@ -95,6 +101,7 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
       showClosedCaptionButton: true,
       showFullscreenButton: true,
       showVolumeButton: true,
+      isTV: widget.isTV,
       bgColor: widget.bgColor,
       onPrevClicked: (nowPlayIndex <= 0) ? null :  () {
         playPrevVideo();
