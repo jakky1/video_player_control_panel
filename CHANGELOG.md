@@ -1,3 +1,7 @@
+## 1.1.3
+
+* Add a `PanelController` class to control the panel, including switching to full-screen mode, and switching to next/previous video.
+
 ## 1.1.2
 
 * add 'bgColor' property

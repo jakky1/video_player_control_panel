@@ -150,6 +150,37 @@ Widget build(BuildContext context) {
 }
 ```
 
+## PanelController class
+
+Use `PanelController` class to control the panel, including switching to full-screen mode, and switching to next/previous video.
+
+```dart
+var controller = VideoPlayerController.file(...);
+var panelController = PanelController();
+
+Widget player = JkVideoControlPanel(
+  controller!,
+  panelController: panelController,
+  ...
+);
+
+// or use `JkVideoPlaylistPlayer` instead
+/*
+Widget player2 = JkVideoPlaylistPlayer(
+  playlist: g_playlist,
+  panelController: panelController,
+  ...
+);
+*/
+
+// methods
+panelController.enterFullscreen();
+panelController.exitFullscreen();
+bool isFullscreen = panelController.isFullscreen();
+panelController.goPrev(); // play previous video
+panelController.goNext(); // play next video
+```
+
 ## Support D-pad navigation in AndroidTV / AppleTV
 
 To enable D-pad navigation to switch focus between buttons, please set property `isTV` to `true`.
