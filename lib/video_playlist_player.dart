@@ -7,12 +7,15 @@ import 'package:video_player/video_player.dart';
 
 import 'video_player_control_panel.dart';
 
-
 class JkVideoPlaylistPlayer extends StatefulWidget {
   final List<String> playlist;
   final bool isLooping;
   final bool autoplay;
   final Color? bgColor;
+  final PanelController? panelController;
+  final bool showFullscreenButton; // not shown in web
+  final bool showClosedCaptionButton;
+  final bool showVolumeButton; // only show in desktop
 
   /// set to 'true' if running on AndroidTV / AppleTV
   /// to make buttons layout are the same with desktop
@@ -26,6 +29,10 @@ class JkVideoPlaylistPlayer extends StatefulWidget {
     this.autoplay = true,
     this.isTV = false,
     this.bgColor,
+    this.panelController,
+    this.showFullscreenButton = true,
+    this.showClosedCaptionButton = false,
+    this.showVolumeButton = true,
   });
 
   @override
@@ -33,7 +40,6 @@ class JkVideoPlaylistPlayer extends StatefulWidget {
 }
 
 class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
-
   VideoPlayerController? controller;
   int nowPlayIndex = 0;
   bool isFirstPlay = true;
@@ -65,7 +71,9 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
         return;
       }
 
-      if (!kIsWeb) controller!.play(); // NOTE: web not allowed auto play without user interaction
+      if (!kIsWeb)
+        controller!
+            .play(); // NOTE: web not allowed auto play without user interaction
     }).catchError((e) {
       log("controller.initialize() error occurs: $e");
     });
@@ -98,17 +106,15 @@ class _JkVideoPlaylistPlayerState extends State<JkVideoPlaylistPlayer> {
   Widget build(BuildContext context) {
     return JkVideoControlPanel(
       controller!,
-      showClosedCaptionButton: true,
-      showFullscreenButton: true,
-      showVolumeButton: true,
+      panelController: widget.panelController,
+      showClosedCaptionButton: widget.showClosedCaptionButton,
+      showFullscreenButton: widget.showFullscreenButton,
+      showVolumeButton: widget.showVolumeButton,
       isTV: widget.isTV,
       bgColor: widget.bgColor,
-      onPrevClicked: (nowPlayIndex <= 0) ? null :  () {
-        playPrevVideo();
-      },
-      onNextClicked: (nowPlayIndex + 1 >= widget.playlist.length) ? null : () {
-        playNextVideo();
-      },
+      onPrevClicked: (nowPlayIndex <= 0) ? null : playPrevVideo,
+      onNextClicked:
+          (nowPlayIndex + 1 >= widget.playlist.length) ? null : playNextVideo,
       onPlayEnded: () {
         if (nowPlayIndex + 1 >= widget.playlist.length) {
           // end of playlist
